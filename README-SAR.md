@@ -6,5 +6,5 @@ This application provides a single output, `LayerVersion`, which points to a
 Lambda Layer ARN you can use with Lambda runtimes based on Amazon Linux 2023 (such
 as the `nodejs22.x` runtime).
 
-For an example of how to use the layer, check out 
-<https://github.com/serverlesspub/ffmpeg-aws-lambda-layer/tree/master/example>
+For an example of how to use the layer, check
+out: [ffmpeg-aws-lambda-layer example](https://github.com/thinktik/ffmpeg-aws-lambda-layer/tree/master/example)
