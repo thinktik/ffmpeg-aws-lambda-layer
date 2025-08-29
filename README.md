@@ -29,11 +29,17 @@ For manual deployments and custom builds, read below...
 ## Prerequisites
 
 * Unix Make environment
+
+| OS           | version | arch   |
+|--------------|---------|--------|
+| Amazon Linux | 2023.x  | x86_64 |
+| Rocky Linux  | 9.x     | x86_64 |
+
 * AWS command line utilities (just for deployment)
 
 ## Deploying to AWS as a layer
 
-This package includes FFmpeg 4.1.3, packaged by John Van Sickle. Please consider supporting him for maintaining
+This package includes FFmpeg 7.0.2, packaged by John Van Sickle. Please consider supporting him for maintaining
 statically built FFmpeg packages. For more information, check out <https://johnvansickle.com/ffmpeg/>
 
 The output will be in the `result` dir.
