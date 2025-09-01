@@ -30,10 +30,10 @@ For manual deployments and custom builds, read below...
 
 * Unix Make environment
 
-  | OS           | version | arch   |
-      |--------------|---------|--------|
-  | Amazon Linux | 2023.x  | x86_64 |
-  | Rocky Linux  | 9.x     | x86_64 |
+| OS           | version | arch   |
+|--------------|---------|--------|
+| Amazon Linux | 2023.x  | x86_64 |
+| Rocky Linux  | 9.x     | x86_64 |
 
 * AWS command line utilities (just for deployment)
 
