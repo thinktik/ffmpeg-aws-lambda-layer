@@ -10,7 +10,7 @@ Resources:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: ffmpeg-7
-      Description: FFMPEG for AWS Lambda
+      Description: FFmpeg for AWS Lambda
       ContentUri: build/layer
       CompatibleRuntimes:
         - nodejs22.x

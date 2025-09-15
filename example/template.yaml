@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  Example project demonstrating the usage of the FFmpeg Layer for AWS Linux 2 runtimes.
+  Example project demonstrating the usage of the FFmpeg Layer for AWS Linux 2023 runtimes.
 
 Parameters:
   LambdaLayer:
@@ -29,8 +29,9 @@ Resources:
       Handler: index.handler
       Timeout: 180
       MemorySize: 1024
-      Runtime: nodejs10.x
+      Runtime: nodejs22.x
       CodeUri: src
+      FunctionName: ffmpeg-layer-convertfile-example
       Layers:
         - !Ref LambdaLayer
       Policies:
@@ -48,6 +49,15 @@ Resources:
           Properties:
             Bucket: !Ref UploadBucket
             Events: s3:ObjectCreated:*
+
+  # S3 permission to invoke Lambda
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ConvertFileFunction
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt UploadBucket.Arn
 
 Outputs:
     UploadBucket:
