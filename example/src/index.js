@@ -1,30 +1,41 @@
+const s3Util = require('./s3-util');
+const childProcessPromise = require('./child-process-promise');
+const path = require('path');
+const os = require('os');
 
-const s3Util = require('./s3-util'),
-	childProcessPromise = require('./child-process-promise'),
-	path = require('path'),
-	os = require('os'),
-	EXTENSION = process.env.EXTENSION,
-	THUMB_WIDTH = process.env.THUMB_WIDTH,
-	OUTPUT_BUCKET = process.env.OUTPUT_BUCKET,
-	MIME_TYPE =  process.env.MIME_TYPE;
+const {
+    EXTENSION,
+    THUMB_WIDTH,
+    OUTPUT_BUCKET,
+    MIME_TYPE
+} = process.env;
 
-exports.handler = function (eventObject, context) {
-	const eventRecord = eventObject.Records && eventObject.Records[0],
-		inputBucket = eventRecord.s3.bucket.name,
-		key = eventRecord.s3.object.key,
-		id = context.awsRequestId,
-		resultKey = key.replace(/\.[^.]+$/, EXTENSION),
-		workdir = os.tmpdir(),
-		inputFile = path.join(workdir,  id + path.extname(key)),
-		outputFile = path.join(workdir, id + EXTENSION);
+exports.handler = async (event, context) => {
+    const eventRecord = event.Records?.[0];
+    if (!eventRecord) {
+        throw new Error('No S3 event record found');
+    }
 
+    const inputBucket = eventRecord.s3.bucket.name;
+    const key = decodeURIComponent(eventRecord.s3.object.key.replace(/\+/g, ' '));
+    const id = context.awsRequestId;
+    const resultKey = key.replace(/\.[^.]+$/, EXTENSION);
+    const workdir = os.tmpdir();
+    const inputFile = path.join(workdir, id + path.extname(key));
+    const outputFile = path.join(workdir, id + EXTENSION);
 
-	console.log('converting', inputBucket, key, 'using', inputFile);
-	return s3Util.downloadFileFromS3(inputBucket, key, inputFile)
-		.then(() => childProcessPromise.spawn(
-			'/opt/bin/ffmpeg',
-			['-loglevel', 'error', '-y', '-i', inputFile, '-vf', `thumbnail,scale=${THUMB_WIDTH}:-1`, '-frames:v', '1', outputFile],
-			{env: process.env, cwd: workdir}
-		))
-		.then(() => s3Util.uploadFileToS3(OUTPUT_BUCKET, resultKey, outputFile, MIME_TYPE));
+    console.log('converting', inputBucket, key, 'using', inputFile);
+
+    await s3Util.downloadFileFromS3(inputBucket, key, inputFile);
+
+    await childProcessPromise.spawn('/opt/bin/ffmpeg', [
+        '-loglevel', 'error',
+        '-y',
+        '-i', inputFile,
+        '-vf', `thumbnail,scale=${THUMB_WIDTH}:-1`,
+        '-frames:v', '1',
+        outputFile
+    ], {env: process.env, cwd: workdir});
+
+    await s3Util.uploadFileToS3(OUTPUT_BUCKET, resultKey, outputFile, MIME_TYPE);
 };
