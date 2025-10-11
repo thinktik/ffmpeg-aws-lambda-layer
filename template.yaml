@@ -33,8 +33,9 @@ Metadata:
   AWS::ServerlessRepo::Application:
     Name: ffmpeg-lambda-layer
     Description: >
-      Static build of FFmpeg/FFprobe for Amazon Linux 2023,
-      packaged as a Lambda layer. Bundles FFmpeg 7.0.2
+      Static build of FFmpeg/FFprobe for Amazon Linux 2023
+      Packaged as a Lambda layer
+      Bundles FFmpeg 7.0.2
     Author: ThinkTik
     SpdxLicenseId: GPL-2.0-or-later
     LicenseUrl: LICENSE.txt
